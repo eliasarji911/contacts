@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Contacts Table with Add Contact</title>
+</head>
+<body>
+<table border="1">
+    <thead>
+        <tr>
+            <th>id</th><th>name</th><th>email</th><th>phone</th><th>edit</th><th>delete</th>
+        </tr>
+    </thead>
+    <tbody id="mytable"></tbody>
+    <tfoot>
+        <tr>
+            <td>new</td>
+            <td><input type="text" id="newName" placeholder="Name" /></td>
+            <td><input type="email" id="newEmail" placeholder="Email" /></td>
+            <td><input type="tel" id="newPhone" placeholder="Phone" /></td>
+            <td><button onclick="addContact()">Add</button></td>
+            <td></td>
+        </tr>
+    </tfoot>
+</table>
+
+<script>
+    // Initialize contacts array from localStorage or empty if not exist
+    let contacts = JSON.parse(localStorage.getItem('contacts'));
+    if (!contacts) {
+        contacts = []; // empty array if nothing in storage
+        localStorage.setItem('contacts', JSON.stringify(contacts));
+    }
+
+    function creatable(data) {
+        let txt = "";
+        for (let obj of data) {
+            txt += "<tr>";
+            txt += `<td>${obj.id}</td>`;
+            txt += `<td><input type="text" value="${obj.name}" data-id="${obj.id}" data-field="name" /></td>`;
+            txt += `<td><input type="email" value="${obj.email}" data-id="${obj.id}" data-field="email" /></td>`;
+            txt += `<td><input type="tel" value="${obj.phone}" data-id="${obj.id}" data-field="phone" /></td>`;
+            txt += `<td><button onclick="saveContact(${obj.id})">Save</button></td>`;
+            txt += `<td><button onclick="deleteContact(${obj.id})">Delete</button></td>`;
+            txt += "</tr>";
+        }
+        document.getElementById("mytable").innerHTML = txt;
+
+        // Add input listeners to update contacts in-memory on change
+        const inputs = document.querySelectorAll("tbody input");
+        inputs.forEach(input => {
+            input.addEventListener("input", (e) => {
+                const id = parseInt(e.target.dataset.id);
+                const field = e.target.dataset.field;
+                const value = e.target.value;
+
+                let contact = contacts.find(c => c.id === id);
+                if (contact) {
+                    contact[field] = value;
+                }
+            });
+        });
+    }
+
+    function saveContact(id) {
+        // Save the updated contacts array back to localStorage
+        localStorage.setItem('contacts', JSON.stringify(contacts));
+        alert(`Contact with ID ${id} saved!`);
+    }
+
+    function deleteContact(id) {
+        contacts = contacts.filter(c => c.id !== id);
+        localStorage.setItem('contacts', JSON.stringify(contacts));
+        creatable(contacts);
+    }
+
+    function addContact() {
+        const name = document.getElementById('newName').value.trim();
+        const email = document.getElementById('newEmail').value.trim();
+        const phone = document.getElementById('newPhone').value.trim();
+
+        if (!name  || !phone ) {
+            alert('Please fill in all fields to add a contact.');
+            return;
+        }
+
+        // Assign new ID: max id + 1 or 1 if empty
+        const newId = contacts.length > 0 ? Math.max(...contacts.map(c => c.id)) + 1 : 1;
+
+        contacts.push({id: newId, name, email, phone});
+
+        // Save to localStorage
+        localStorage.setItem('contacts', JSON.stringify(contacts));
+
+        // Clear input fields
+        document.getElementById('newName').value = '';
+        document.getElementById('newEmail').value = '';
+        document.getElementById('newPhone').value = '';
+
+        // Refresh the table
+        creatable(contacts);
+    }
+
+    // Initial render
+    creatable(contacts);
+</script>
+</body>
+</html>
+
+
