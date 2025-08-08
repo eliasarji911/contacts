@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <table border="1">
+        <thead>
+            <tr>
+            <th>id</th><th>name</th><th>email</th><th>phone</th><th>edit</th><th>delet</th>
+            </tr>
+        </thead>
+        <tbody id="mytable">
+
+        </tbody>
+    </table>
+    <script>
+        let contacts = [
+            {id:1,name:"elia",email:"e@e",phone:"052"}
+
+        ]
+        localStorage.setItem('contacts',JSON.stringify(contacts))
+        let arr = JSON.parse(localStorage.getItem("contacts")) 
+        console.log(arr[0].name);
+
+        //
+        function creatable(data){
+            let txt ="";
+            for(obj of data){
+                txt += "<tr>";
+                    txt += "<td>"
+            }
+        }
+    </script>
+</body>
+</html>

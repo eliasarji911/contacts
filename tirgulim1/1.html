@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+   
+   
+     iD<input type="number" id="idinput"><br>  
+    name<input type="text" id="inputname"><br>
+    <button type="submit" onclick="addstudent()">send</button>
+   
+   
+    <table border="1">
+        <thead>
+            <tr><th>delete</th><th> id </th><th> name </th><th>edit</th></tr>
+        </thead>
+        <tbody id="mytable">
+            
+        </tbody>
+    </table>
+
+    <script>
+     //   let student = {id:101,name:"elia"}
+     //  let txt = `<tr><td>${student.id}</td><td>${student.name}</td></tr>`
+     //  document.getElementById('mytable').innerHTML = txt;
+
+
+     let students = [
+       {id:101,name:"elia"},
+       {id:102,name:"sarji"}
+    ]
+
+   
+
+////////////////////////////////////////////////////////////
+    //read
+    function creatable(data){
+
+        let txt = "";
+        for(obj of data){
+            txt += "<tr>";
+                txt += `<td><button onclick="deletstudents(${obj.id})">delete</button></td>`
+                for(k in obj){
+                    txt += `<td>${obj[k]}</td>`;
+                }
+                txt += `<td><button onclick="edit(${obj.id})">edit</button</td>`;
+                txt += "</tr>";
+        }
+        document.getElementById('mytable').innerHTML = txt;
+    }
+    creatable(students);
+/////////////////////////////////////////////////////////////
+function addstudent(){
+   
+    let id = Number(document.getElementById("idinput").value);
+    let name = document.getElementById("inputname").value;
+    if (!id || !name){
+        alert("try again");
+        return;
+    }
+    let obj = {id,name};
+    students.push(obj);
+    creatable(students);
+   // console.log(students);
+   //  creatable(students);
+     
+     document.getElementById("idinput").value = "";
+     document.getElementById("inputname").value = "";
+
+}
+     creatable(students);
+//////////////////////////////////////////////////////////
+// delete
+function deletstudents(id){
+    students = students.filter(o=>o.id != id);
+    creatable(students);
+}
+
+
+
+/////////////////////////////////////////////////////////
+function edit(id){
+    let student = students.find(s => s.id === id);
+    if (student){
+        document.getElementById("idinput").value = student.id;
+        document.getElementById("inputname").value = student.name;
+    }
+}
+
+creatable(students);
+////////////////////////////////////////////////////////
+function editstudent(i){
+    document.getElementById("input").value = students[i].id;
+    document.getElementById("inputname").value = students[i].name;
+    editindex = i;
+}
+
+   </script>
+</body>
+</html>
